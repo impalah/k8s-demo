@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: clickhouse-server
+spec:
+  selector:
+    matchLabels:
+      app: clickhouse-server
+  serviceName: clickhouse-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: clickhouse-server
+    spec:
+      containers:
+        - name: clickhouse-server
+          image: yandex/clickhouse-server:20.8.9
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: ${DEPLOYMENT_CPU_LIMIT}
+              memory: ${DEPLOYMENT_MEMORY_LIMIT}
+            requests:
+              cpu: ${DEPLOYMENT_CPU_REQUESTS}
+              memory: ${DEPLOYMENT_MEMORY_REQUESTS}
+          ports:
+            - name: port8123
+              containerPort: 8123
+            - name: port9000
+              containerPort: 9000
+          env:
+            - name: CLICKHOUSE_CONFIG
+              value: "/var/clickhouse-server-config/config.xml"
+          volumeMounts:
+            - name: clickhouse-server-data-volume
+              mountPath: /data
+              subPath: clickhouse-server-data-volume
+      imagePullSecrets:
+        - name: aws-registry
+      volumes:
+        - name: clickhouse-server-data-volume
+          persistentVolumeClaim:
+            claimName: clickhouse-server-data-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-server
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8123
+    targetPort: 8123
+    name: port8123
+  - port: 9000
+    targetPort: 9000
+    name: port9000
+  selector:
+    app: clickhouse-server
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: clickhouse-server-data-volume
+  annotations:
+    volume.alpha.kubernetes.io/storage-class: default
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: ${VOLUME_SIZE}
