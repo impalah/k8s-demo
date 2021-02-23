@@ -1,0 +1,40 @@
+<dictionaries>
+    <dictionary>
+        <name>browser</name>
+        <source>
+            <mysql>
+                <port>3306</port>
+                <user>clickhouse</user>
+                <password>Cl1ck$Hou$3</password>
+                <host>my_database.server.com</host>
+                <db>my_database</db>
+                <table>browsers</table>
+            </mysql>
+        </source>
+
+        <!-- Update interval for fully loaded dictionaries. 0 - never update. -->
+        <lifetime>
+            <min>100</min>
+            <max>250</max>
+        </lifetime>
+        <layout> <!-- Method for storing in memory. -->
+            <flat />
+            <!-- or <hashed />
+            or
+            <cache>
+                <!- - Cache size in number of cells; rounded up to a degree of two. - ->
+                <size_in_cells>1000000000</size_in_cells>
+            </cache> -->
+        </layout>
+        <structure>
+            <id>
+                <name>id</name>
+            </id>
+            <attribute>
+                <name>name</name>
+                <type>String</type>
+                <null_value></null_value>
+            </attribute>
+        </structure>
+    </dictionary>
+</dictionaries>
