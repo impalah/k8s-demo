@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: clickhouse-server
+spec:
+  selector:
+    matchLabels:
+      app: clickhouse-server
+  serviceName: clickhouse-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: clickhouse-server
+    spec:
+      containers:
+        - name: clickhouse-server
+          image: docker.io/impalah/clickhouse-server:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 3Gi
+            requests:
+              cpu: 1000m
+              memory: 2Gi
+          ports:
+            - name: port8123
+              containerPort: 8123
+            - name: port9000
+              containerPort: 9000
+          volumeMounts:
+            - name: clickhouse-server-data-volume
+              mountPath: /data
+              subPath: clickhouse-server-data-volume
+      imagePullSecrets:
+        - name: aws-registry
+      volumes:
+        - name: clickhouse-server-data-volume
+          persistentVolumeClaim:
+            claimName: clickhouse-server-data-volume

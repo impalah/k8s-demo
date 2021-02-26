@@ -93,9 +93,14 @@
 
 	    <remote>
             <password>Click$House$erver2021!</password>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <!--
             <networks incl="networks" replace="replace">
                 <ip>::/0</ip>
             </networks>
+            -->
 
             <!-- Settings profile for user. -->
             <profile>default</profile>
@@ -108,10 +113,17 @@
         <!-- Example of user with readonly access. -->
         <readonly>
             <password>Click$House$erver2021!</password>
+
+            <networks>
+                <ip>::1</ip>
+                <ip>127.0.0.1</ip>
+            </networks>
+            <!--
             <networks incl="networks" replace="replace">
                 <ip>::1</ip>
                 <ip>127.0.0.1</ip>
             </networks>
+            -->
             <profile>readonly</profile>
             <quota>default</quota>
         </readonly>
